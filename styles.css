@@ -232,6 +232,19 @@ body {
   color: var(--muted);
 }
 
+.qr-hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 12px;
+}
+
+.payment-qr {
+  margin-top: 10px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 8px;
+}
+
 .secondary-button {
   background: rgba(79, 157, 255, 0.14);
   color: var(--accent-strong);
