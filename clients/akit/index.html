@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKIT STUDIO — 상세페이지 제작 서비스</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+  :root{
+    --cream:#ECEAE3; --paper:#F4F3EF; --white:#FFFFFF; --ink:#141414;
+    --orange:#FF4D1C; --muted:#7A776F; --line:#E0DDD4; --akit:#FCEEE9;
+    /* ===== 타입 스케일 (Apple 앵커 · 본문최소 17 · 여기 숫자만 바꾸면 전체 조정) ===== */
+    --fs-hero:56px;        /* 히어로 H1 */
+    --fs-display:40px;     /* THE POINT · START · 가격(72만원) · 리얼리티 번호 */
+    --fs-h2:34px;          /* 섹션 제목 */
+    --fs-subdisplay:28px;  /* 풀케어 제목 · 세일즈/클린 가격 */
+    --fs-title:24px;       /* 리얼리티 항목제목 · 세일즈/클린 제목 */
+    --fs-body:17px;        /* 주요 본문 단락 (애플 최소) */
+    --fs-caption:14px;     /* 조밀 데이터: 비교표·카드·FAQ 본문 */
+    --fs-label:13px;       /* 키커·기간·정가·푸터 */
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Pretendard',-apple-system,sans-serif;color:var(--ink);background:var(--cream);
+       -webkit-font-smoothing:antialiased;line-height:1.6;}
+  .page{width:100%;background:var(--cream);}
+  .or{color:var(--orange);}
+  .kick{font-size:13px;font-weight:700;letter-spacing:.32em;color:var(--orange);margin-bottom:22px;}
+  .kick::before{content:"● ";font-size:10px;vertical-align:middle;}
+  .sec{padding:96px 90px;}
+  .h2{font-size:var(--fs-h2);font-weight:800;line-height:1.3;letter-spacing:-.02em;white-space:nowrap;}
+
+  /* TOP BAR */
+  .topbar{background:#141414;display:flex;justify-content:space-between;align-items:center;
+          padding:24px 80px;position:sticky;top:0;z-index:50;transition:box-shadow .3s ease;}
+  .topbar.scrolled{box-shadow:0 6px 24px rgba(0,0,0,.22);}
+  .logo{font-size:18px;font-weight:700;letter-spacing:3.24px;color:#F3F1EC;display:flex;align-items:center;gap:8px;}
+  .logo .dot{width:10px;height:10px;border-radius:5px;background:#FF4D1C;display:inline-block;}
+  .nav{font-size:13px;font-weight:400;color:#B7B4AD;letter-spacing:1.56px;}
+
+  /* HERO */
+  .hero{background:#ECEAE3;padding:96px 80px 84px;display:flex;flex-direction:column;gap:14.8px;align-items:flex-start;}
+  .hero .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .hero .eyebrow{font-size:var(--fs-body);color:#6B6B66;line-height:1.5;padding-top:9.2px;}
+  .hero h1{font-size:var(--fs-hero);font-weight:800;line-height:1.1;letter-spacing:-1.4px;color:#141414;white-space:nowrap;}
+  .hero .sub{font-size:var(--fs-body);color:#6B6B66;line-height:1.6;padding-top:11.2px;padding-bottom:21.2px;}
+  .meta{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;width:100%;padding:17px 0;border-top:1px solid #ECECE8;border-bottom:1px solid #ECECE8;}
+  .chip-i{font-size:var(--fs-body);font-weight:700;color:#141414;letter-spacing:.28px;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+  .chip-i::before{content:"✓";color:#FF4D1C;font-weight:800;}
+
+  /* REALITY — Figma 정확값 */
+  .reality{background:#fff;padding:88px 80px;display:flex;flex-direction:column;gap:23.2px;align-items:flex-start;}
+  .reality .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .reality .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;}
+  .rclist{padding-top:16.8px;width:100%;}
+  .rc{display:flex;gap:34px;align-items:flex-start;padding:33px 0 32px;border-top:1px solid #ECECE8;}
+  .rc:last-child{padding-bottom:33px;border-bottom:1px solid #ECECE8;}
+  .rc .num{width:80px;flex:none;font-size:var(--fs-display);font-weight:700;color:#B8B4A8;line-height:1;}
+  .rc .body{min-width:0;display:flex;flex-direction:column;gap:9.11px;}
+  .rc h3{font-size:var(--fs-title);font-weight:800;color:#141414;letter-spacing:-.24px;padding:3px 0;white-space:nowrap;}
+  .rc p{font-size:var(--fs-body);color:#6B6B66;line-height:1.6;white-space:nowrap;}
+
+  /* THE POINT — Figma 정확값 */
+  .point{background:#141414;padding:100px 80px;display:flex;flex-direction:column;gap:23px;align-items:flex-start;}
+  .point .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .point .h2{font-size:var(--fs-display);line-height:1.15;letter-spacing:-1px;color:#F3F1EC;white-space:nowrap;}
+  .point .sub{display:flex;flex-direction:column;gap:28.39px;width:100%;}
+  .point .sub p{font-size:var(--fs-body);color:#9A99A2;line-height:1.6;white-space:nowrap;}
+
+  /* COMPARE — Figma 정확값 + 유연 CSS (절대위치 제거) */
+  .compare{background:#fff;padding:88px 80px;}
+  .compare .kick{letter-spacing:6.5px;}
+  .compare .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;}
+  .ctbl{margin-top:40px;width:100%;}
+  .ctr{display:flex;width:100%;}
+  .ctr>div{box-sizing:border-box;}
+  .cc1{width:209.88px;background:#FDFDFD;padding:22px 20px;display:flex;align-items:center;}
+  .cc2{width:293.81px;background:#FAF9F6;padding:22px 20px;}
+  .cc3{width:335.81px;background:#FFFBF9;padding:22px 20px;}
+  .ctr .lbl{font-size:var(--fs-caption);font-weight:800;color:#141414;line-height:1.45;}
+  .ctr .gen{font-size:var(--fs-caption);font-weight:400;color:#6B6B66;line-height:1.55;}
+  .chead .cc1,.chead .cc2{border-bottom:2px solid #141414;}
+  .chead .cc2 .h{font-size:var(--fs-caption);font-weight:800;color:#6B6B66;}
+  .chead .cc3{background:#FFF7F4;border-left:1px dashed rgba(255,77,28,.2);border-right:1px dashed rgba(255,77,28,.2);border-bottom:2px dashed rgba(255,77,28,.2);}
+  .chead .cc3 .h{font-size:var(--fs-body);font-weight:700;color:#FF4D1C;}
+  .cbody .cc1,.cbody .cc2{border-bottom:1px solid #ECECE8;}
+  .cbody .cc3{border-left:1px dashed rgba(255,77,28,.2);border-right:1px dashed rgba(255,77,28,.2);border-bottom:1px dashed rgba(255,77,28,.2);}
+  .cbody .ctr:last-child .cc3{border-bottom-width:2px;}
+  .ck{display:flex;gap:6px;align-items:flex-start;}
+  .ck .m{color:#FF4D1C;font-weight:800;font-size:var(--fs-caption);line-height:1.55;flex:none;width:14px;}
+  .ck .t{font-size:var(--fs-caption);font-weight:800;color:#141414;line-height:1.55;}
+
+  /* SERVICE PLAN — Figma 정확값 */
+  .plan-sec{background:#fff;padding:0 80px 88px;display:flex;flex-direction:column;gap:20px;align-items:flex-start;}
+  .plan-sec .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .plan-sec .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;padding-top:3.2px;}
+  .pcard{position:relative;background:#fff;border:2px solid #FF4D1C;border-radius:24px;padding:32px 42px 42px;width:100%;box-shadow:0 24px 30px rgba(255,77,28,.14);display:flex;flex-direction:column;gap:8px;}
+  .pcard .badge{position:absolute;top:-2px;right:40px;background:#FF4D1C;color:#fff;border-radius:0 0 14px 14px;padding:16px 20px 14px;text-align:center;}
+  .pcard .badge b{display:block;font-size:22px;font-weight:700;line-height:23.1px;}
+  .pcard .badge span{display:block;font-size:13px;font-weight:700;letter-spacing:1.04px;line-height:13.65px;}
+  .pchips{display:flex;gap:8px;}
+  .pchip{font-size:13px;font-weight:700;padding:7px 15px;border-radius:999px;display:flex;align-items:center;}
+  .pchip.b{background:linear-gradient(99.5deg,#FF4D1C 0%,#FF6A33 100%);color:#fff;letter-spacing:.78px;}
+  .pchip.g{background:#FFE9E0;color:#FF4D1C;font-weight:800;}
+  .pcard h3{font-size:var(--fs-subdisplay);font-weight:800;color:#141414;letter-spacing:-.5px;padding:12px 0 5px;}
+  .pcard .desc{font-size:var(--fs-body);color:#6B6B66;line-height:1.5;}
+  .pcard ul{list-style:none;display:flex;flex-direction:column;padding:18px 0;}
+  .pcard li{font-size:var(--fs-body);font-weight:800;color:#141414;line-height:1.95;padding-left:26px;position:relative;white-space:nowrap;}
+  .pcard li::before{content:"✓";color:#FF4D1C;position:absolute;left:0;}
+  .pdiv{height:1px;background:#ECECE8;width:100%;}
+  .priceblk{display:flex;gap:14px;align-items:flex-end;justify-content:flex-end;padding-top:18px;}
+  .pricetag{background:#FFE9E0;color:#FF4D1C;font-size:14px;font-weight:800;padding:7px 10px;border-radius:6px;min-width:129px;text-align:center;margin-bottom:15px;}
+  .priceblk .pr{display:flex;flex-direction:column;align-items:flex-end;gap:8.5px;}
+  .price{font-size:var(--fs-display);font-weight:700;color:#141414;letter-spacing:-.8px;line-height:1;white-space:nowrap;}
+  .origin{font-size:var(--fs-caption);color:#B8B4A8;text-decoration:line-through;}
+  .subcards{display:grid;grid-template-columns:1fr 1fr;gap:20px;width:100%;}
+  .scard{background:#fff;border:1px solid #D8D5CC;border-radius:18px;padding:33px 29px 23px;display:flex;flex-direction:column;gap:8px;}
+  .scard h4{font-size:var(--fs-title);font-weight:800;color:#141414;padding:3px 0;}
+  .scard .q{font-size:var(--fs-caption);color:#6B6B66;}
+  .scard .body{font-size:var(--fs-caption);color:#6B6B66;line-height:1.6;padding:8px 0 14.5px;}
+  .scard .foot{border-top:1px solid #ECECE8;padding-top:15px;display:flex;align-items:center;justify-content:space-between;}
+  .scard .now{display:flex;flex-direction:column;}
+  .scard .now .price{font-size:var(--fs-subdisplay);line-height:normal;}
+  .scard .now .origin{margin-top:2px;}
+  .scard .off{background:#FFE9E0;color:#FF4D1C;font-size:13px;font-weight:800;padding:7px 10px;border-radius:6px;}
+
+  /* RISK FREE — Figma 정확값 */
+  .risk{background:#ECEAE3;padding:88px 80px;display:flex;flex-direction:column;gap:23.2px;align-items:flex-start;}
+  .risk .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .risk .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;}
+  .rcards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;width:100%;padding-top:12.8px;}
+  .rcard{background:#fff;border:1px solid #D8D5CC;border-radius:16px;padding:33px 25px 56px;display:flex;flex-direction:column;gap:11px;}
+  .rcard .ic{font-size:28px;}
+  .rcard h4{font-size:var(--fs-body);font-weight:800;color:#141414;line-height:1.4;}
+  .rcard p{font-size:var(--fs-caption);color:#6B6B66;line-height:1.6;}
+
+  /* WORK FLOW — Figma 정확값 */
+  .flow{background:#fff;padding:88px 80px;display:flex;flex-direction:column;gap:23.2px;align-items:flex-start;}
+  .flow .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .flow .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;}
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);column-gap:24px;row-gap:32px;width:100%;padding-top:12.8px;}
+  .wstep{border-top:2px solid #141414;padding-top:24px;display:flex;flex-direction:column;gap:9.1px;}
+  .wn{font-size:32px;font-weight:700;color:#FF4D1C;}
+  .wh{display:flex;flex-direction:column;}
+  .wh .t{font-size:var(--fs-body);font-weight:700;color:#141414;line-height:1.4;}
+  .wh .d{font-size:13px;color:#6B6B66;line-height:18.2px;}
+  .wstep p{font-size:var(--fs-caption);color:#6B6B66;line-height:1.6;}
+  .maker{display:flex;gap:30px;align-items:center;width:100%;border-top:1px solid #D8D5CC;padding-top:41px;margin-top:8px;}
+  .makercircle{background:#FF4D1C;width:127px;height:127px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;text-align:center;}
+  .makercircle span{color:#ECEAE3;font-size:24px;font-weight:800;line-height:38.4px;letter-spacing:2px;}
+  .makerinfo h4{font-size:22px;font-weight:800;color:#141414;white-space:nowrap;}
+  .makerinfo ul{list-style:none;margin-top:12px;display:flex;flex-direction:column;}
+  .makerinfo li{font-size:var(--fs-caption);color:#6B6B66;line-height:1.85;padding-left:20px;position:relative;white-space:nowrap;}
+  .makerinfo li::before{content:"—";color:#FF4D1C;position:absolute;left:0;}
+
+  /* FAQ — Figma 정확값 */
+  .faq{background:#ECEAE3;padding:88px 80px;display:flex;flex-direction:column;gap:23.2px;align-items:flex-start;}
+  .faq .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .faq .h2{font-size:var(--fs-h2);line-height:1.3;letter-spacing:-.5px;}
+  .faqbox{border-top:2px solid #141414;padding-top:14.8px;width:100%;}
+  .qa{display:flex;gap:24px;align-items:flex-start;padding:28px 0 29px;border-bottom:1px solid #ECECE8;}
+  .qa:last-child{border-bottom:none;}
+  .qa .qm{width:30px;flex:none;font-size:24px;font-weight:700;color:#FF4D1C;}
+  .qa .qc{flex:1;min-width:0;display:flex;flex-direction:column;gap:11px;}
+  .qa .qq{font-size:var(--fs-body);font-weight:800;color:#141414;padding:2px 0;white-space:nowrap;}
+  .qa .qa-a{font-size:var(--fs-caption);color:#6B6B66;line-height:1.7;white-space:nowrap;}
+  .qa .qa-blocks{display:flex;flex-direction:column;gap:25.4px;}
+  .qa .qlabel{font-weight:700;color:#6B6B66;}
+
+  /* START — Figma 정확값 */
+  .start{background:#141414;padding:100px 80px;display:flex;flex-direction:column;gap:19px;align-items:flex-start;text-align:left;}
+  .start .kick{margin-bottom:0;letter-spacing:6.5px;}
+  .start h2{font-size:var(--fs-display);font-weight:800;color:#F3F1EC;line-height:1.2;letter-spacing:-.8px;padding-top:5px;white-space:nowrap;}
+  .start .sub{font-size:var(--fs-body);color:#9A99A2;line-height:1.6;padding-bottom:21.89px;}
+  .btn{display:inline-block;background:linear-gradient(98.88deg,#FF4D1C 0%,#FF6A33 100%);color:#fff;font-size:20px;font-weight:800;padding:24px 48px 25px;border-radius:12px;text-decoration:none;white-space:nowrap;}
+  .start .note{font-size:var(--fs-caption);color:#7C7B84;padding:5px 0 13px;}
+  .start .fine{font-size:13px;color:#5B5A63;border-top:1px solid rgba(255,255,255,.1);padding-top:22px;width:100%;white-space:nowrap;}
+
+  /* ===== FULL-BLEED 밴드: 배경은 가로 전체, 내용은 가운데 고정 1000px(좌우 80px) ===== */
+  .topbar,.hero,.reality,.point,.compare,.plan-sec,.risk,.flow,.faq,.start{
+    padding-left:max(20px,calc((100% - 1000px) / 2 + 80px))!important;
+    padding-right:max(20px,calc((100% - 1000px) / 2 + 80px))!important;
+  }
+
+  /* ===== INTERACTIONS (progressive enhancement) ===== */
+  html{scroll-behavior:smooth;}
+  body{overflow-x:hidden;}
+  .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease;}
+  .js .reveal.in{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){.js .reveal{opacity:1!important;transform:none!important;transition:none;}}
+  .scard,.rcard,.wstep,.pcard{transition:transform .25s ease,box-shadow .25s ease,opacity .55s ease;}
+  .scard:hover,.rcard:hover{transform:translateY(-4px);box-shadow:0 14px 28px rgba(20,20,20,.08);}
+  .wstep:hover{transform:translateY(-3px);}
+  .pcard:hover{transform:translateY(-3px);box-shadow:0 30px 44px rgba(255,77,28,.20);}
+  .btn{transition:transform .2s ease,box-shadow .2s ease;}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 26px rgba(255,77,28,.4);}
+  /* FAQ accordion (JS builds .acc / .qa-body) */
+  .qa.acc .qc{gap:0;}
+  .qa.acc .qq{cursor:pointer;padding-right:34px;position:relative;}
+  .qa.acc .qq::after{content:"";position:absolute;right:6px;top:9px;width:8px;height:8px;border-right:2px solid #141414;border-bottom:2px solid #141414;transform:rotate(45deg);transition:transform .3s ease;}
+  .qa.acc.open .qq::after{transform:rotate(-135deg);}
+  .qa-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease;}
+  .qa.open .qa-body{grid-template-rows:1fr;}
+  .qa-inner{overflow:hidden;padding-top:11px;}
+  /* back-to-top (JS injects #toTop) */
+  #toTop{position:fixed;right:24px;bottom:24px;width:48px;height:48px;border-radius:50%;background:#FF4D1C;color:#fff;border:none;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transform:translateY(10px);transition:opacity .3s,transform .3s,box-shadow .2s;box-shadow:0 8px 20px rgba(255,77,28,.35);z-index:60;}
+  #toTop.show{opacity:1;visibility:visible;transform:none;}
+  #toTop:hover{box-shadow:0 12px 26px rgba(255,77,28,.5);}
+
+  /* ===== RESPONSIVE ===== */
+  @media(max-width:1040px){
+    .h2,.hero h1,.hero .sub,.point .h2,.point .sub p,.rc h3,.rc p,.pcard li,.makerinfo h4,.makerinfo li,.qa .qq,.qa-a,.start h2,.start .fine,.chip-i{white-space:normal;}
+    .hero h1{font-size:clamp(32px,6vw,56px);line-height:1.15;letter-spacing:-1px;}
+    .h2{font-size:clamp(25px,3.6vw,34px);line-height:1.3;}
+    .point .h2{font-size:clamp(28px,4.4vw,40px);line-height:1.2;}
+    .start h2{font-size:clamp(26px,4.2vw,40px);line-height:1.25;}
+    .cc1{width:24%;} .cc2{width:35%;} .cc3{width:41%;}
+  }
+  @media(max-width:640px){
+    .topbar{padding:16px 20px;}
+    .logo{font-size:16px;letter-spacing:2px;}
+    .logo .dot{width:8px;height:8px;}
+    .nav{display:none;}
+    .hero,.reality,.point,.compare,.plan-sec,.risk,.flow,.faq{padding-top:56px;padding-bottom:56px;}
+    .start{padding-top:64px;padding-bottom:64px;}
+    .plan-sec{padding-top:8px;}
+    .meta{grid-template-columns:1fr;}
+    .subcards,.rcards,.steps{grid-template-columns:1fr;}
+    .rc{gap:18px;} .rc .num{font-size:34px;width:46px;}
+    .maker{flex-direction:column;align-items:flex-start;gap:20px;}
+    .compare .ctbl{display:flex;flex-direction:column;}
+    .ctbl .chead{display:none;}
+    .cbody{display:flex;flex-direction:column;gap:14px;}
+    .cbody .ctr{flex-direction:column;border:1px solid #E0DDD4;border-radius:10px;overflow:hidden;}
+    .cbody .cc1,.cbody .cc2,.cbody .cc3{width:100%;border:none;}
+    .cbody .cc1{background:#141414;padding:16px 20px;}
+    .cbody .cc1 .lbl{color:#fff;}
+    .cbody .cc2{background:#FAF9F6;}
+    .cbody .cc3{background:#FFF7F4;}
+    .cbody .cc2::before{content:"일반 외주 업체";display:block;font-size:11px;font-weight:800;color:#B8B4A8;letter-spacing:.5px;margin-bottom:6px;}
+    .cbody .cc3::before{content:"아킷 스튜디오";display:block;font-size:11px;font-weight:800;color:#FF4D1C;letter-spacing:.5px;margin-bottom:6px;}
+    .priceblk{flex-wrap:wrap;justify-content:flex-start;}
+    #toTop{right:16px;bottom:16px;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo">AKIT<span class="dot"></span>STUDIO</div>
+    <div class="nav">상세페이지 · 제품촬영 · 브랜드 셋업</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kick">WHY THIS MATTERS</div>
+    <div class="eyebrow">복잡한 툴도, 막막한 디자인도 이제 그만.</div>
+    <h1>상세페이지 제작은 맡겨두고,<br><span class="or">판매</span>에만 <span class="or">집중</span>하세요.</h1>
+    <div class="sub">대표님은 제품만 준비하세요 —<br>핵심만 들려주시면 결제를 부르는 구조 설계부터 촬영·디자인 완성까지 책임지겠습니다.</div>
+    <div class="meta">
+      <div class="chip-i">사전 폼 + 1:1 심층 미팅</div>
+      <div class="chip-i">무료 왕복 픽업 촬영</div>
+      <div class="chip-i">디자인 + 즉시적용 HTML 소스</div>
+      <div class="chip-i">세금계산서 발행</div>
+    </div>
+  </section>
+
+  <!-- REALITY CHECK -->
+  <section class="sec reality">
+    <div class="kick">REALITY CHECK</div>
+    <h2 class="h2">상세페이지 앞에서 마주하는<br>1인 대표님의 3가지 무거운 숙제.</h2>
+    <div class="rclist">
+      <div class="rc">
+        <div class="num">01</div>
+        <div class="body">
+          <h3>[시간의 장벽] 상세페이지 제작, 결국 전부 내 몫</h3>
+          <p>시장 보고 제품 소싱하기에도 하루 24시간이 모자란데, 생소한 디자인 툴까지 직접 익혀야 합니다.<br>본업에 써야 할 시간을 쪼개 노트북 앞에 앉아도, 어디서부터 손대야 할지 막막하기만 합니다.</p>
+        </div>
+      </div>
+      <div class="rc">
+        <div class="num">02</div>
+        <div class="body">
+          <h3>[구조의 장벽] 사진만 나열하면, 고객은 그냥 지나칩니다</h3>
+          <p>사진과 정보만 쭉 나열된 페이지에선, 고객이 '왜 이걸 사야 하는지'를 못 느끼고 그대로 이탈합니다.<br>빠진 건 디자인이 아니라 '사게 만드는 순서'예요.</p>
+        </div>
+      </div>
+      <div class="rc">
+        <div class="num">03</div>
+        <div class="body">
+          <h3>[브랜드의 장벽] '파는 물건'에서 멈춰 있진 않나요?</h3>
+          <p>페이지가 남들과 똑같은 '그냥 파는 물건'처럼 보이면, 더 좋은 값을 받거나 단골·팬으로 이어지긴 어렵죠.<br>일반 제품을 '브랜드'로 끌어올리는 마지막 한 끗이 아쉽습니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THE POINT -->
+  <section class="sec point">
+    <div class="kick">THE POINT</div>
+    <h2 class="h2">잘 만든 디자인을 넘어,<br>고객을 움직이는 <span class="or">'구매 동선'</span>을 더합니다.</h2>
+    <div class="sub">
+      <p>아킷 스튜디오의 작업은 보기 좋게 만드는 데서 멈추지 않습니다.<br>스크롤을 내릴 때마다 '살 이유'가 쌓이도록 — 설득의 순서를 설계합니다.</p>
+      <p>화면과 콘텐츠의 '구조'를 설계해 온 UX 기획자이자, 직접 매장에서 고객을 마주해 온 셀러.<br>그래서 제품을 '가장 사고 싶어지는 흐름'으로 풀어냅니다.</p>
+    </div>
+  </section>
+
+  <!-- COMPARE -->
+  <section class="sec compare">
+    <div class="kick">COMPARE</div>
+    <h2 class="h2">디자인 너머의 설계,<br>보이지 않는 수고의 제로화.</h2>
+
+    <div class="ctbl">
+      <div class="ctr chead">
+        <div class="cc1"><span class="lbl">비교 항목</span></div>
+        <div class="cc2"><span class="h">일반 외주 업체</span></div>
+        <div class="cc3"><span class="h">아킷 스튜디오</span></div>
+      </div>
+      <div class="cbody">
+        <div class="ctr">
+          <div class="cc1"><span class="lbl">핵심 기획 방식</span></div>
+          <div class="cc2"><span class="gen">제공받은 기획서 기반 단순 텍스트<br>배치 및 정형화된 공장형 템플릿 사용</span></div>
+          <div class="cc3"><div class="ck"><span class="m">✓</span><span class="t">1:1 심층 미팅 기반, 이탈률을 방어하는<br>독창적 UI/UX 화면 설계(와이어프레임)</span></div></div>
+        </div>
+        <div class="ctr">
+          <div class="cc1"><span class="lbl">비주얼 접근법</span></div>
+          <div class="cc2"><span class="gen">스톡 이미지 짜깁기 또는 고가의<br>스튜디오 대관료를 소비자에게 전가</span></div>
+          <div class="cc3"><div class="ck"><span class="m">✓</span><span class="t">현역 웨딩스냅 작가의 감도를 녹인 고해상도<br>누끼 실촬영 + AI 정교한 배경 연출</span></div></div>
+        </div>
+        <div class="ctr">
+          <div class="cc1"><span class="lbl">개발 및 코드 지원</span></div>
+          <div class="cc2"><span class="gen">웹 업로드나 용량 최적화가 고려되지 않은<br>통이미지(JPG) 파일만 납품</span></div>
+          <div class="cc3"><div class="ck"><span class="m">✓</span><span class="t">사이트 로딩 속도와 상위 노출(SEO)을<br>돕는 웹 복사용 HTML 코드 기본 제공</span></div></div>
+        </div>
+        <div class="ctr">
+          <div class="cc1"><span class="lbl">업무 리소스 투입</span></div>
+          <div class="cc2"><span class="gen">대표님이 직접 기획안 작성 및 촬영<br>스튜디오 섭외 등 복잡한 동선 조율 필요</span></div>
+          <div class="cc3"><div class="ck"><span class="m">✓</span><span class="t">업무 스트레스 Zero.<br>간단한 폼 작성 후 제품만 택배로 보내면 끝나는 완벽 위임 시스템</span></div></div>
+        </div>
+        <div class="ctr">
+          <div class="cc1"><span class="lbl">디자인 원본 (Figma)</span></div>
+          <div class="cc2"><span class="gen">원본 파일 제공 불가 혹은 작업 단가의 30~50% 수준의 과도한 추가 비용 청구</span></div>
+          <div class="cc3"><div class="ck"><span class="m">✓</span><span class="t">향후 문구 및 간단한 수정이 상시 가능하도록<br>합리적인 추가 구매 옵션으로 선택 가능</span></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE PLAN -->
+  <section class="sec plan-sec planhead">
+    <div class="kick">SERVICE PLAN</div>
+    <h2 class="h2">퀄리티도, 금액도 당당히 비교하세요.<br>오직 수강생 전용 특별 한정가.</h2>
+
+    <div class="pcard">
+      <div class="badge"><b>35%</b><span>OFF</span></div>
+      <div class="pchips">
+        <span class="pchip b">BEST</span>
+        <span class="pchip g">브랜드 필수 작업</span>
+      </div>
+      <h3>풀케어 올인원</h3>
+      <div class="desc">"알아서 끝내주세요" — 기획, 촬영, 디자인, 코드화까지 완벽하게 끝내고 싶은 대표님</div>
+      <ul>
+        <li>1:1 맞춤 기획 (자동화 폼 + 심층 미팅)</li>
+        <li>무료 픽업 고해상도 감도 스냅 실촬영 + AI 배경 연출</li>
+        <li>UI/UX 전환 구조 맞춤 디자인 + 플랫폼 즉시 적용 HTML 코드 납품</li>
+      </ul>
+      <div class="pdiv"></div>
+      <div class="priceblk">
+        <span class="pricetag">수강생 한정 할인</span>
+        <div class="pr">
+          <span class="price">72만원</span>
+          <span class="origin">정가 110만원</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="subcards">
+      <div class="scard">
+        <h4>세일즈 케어</h4>
+        <div class="q">"누끼컷은 있지만 제품 카피는 없어요"</div>
+        <div class="body">제공된 소스 기반 제품 연출컷<br>+ 판매율을 높이는 UI/UX 레이아웃 설계 및 디자인 마감</div>
+        <div class="foot">
+          <div class="now"><span class="price">28만원</span><span class="origin">정가 40만원</span></div>
+          <span class="off">-30%</span>
+        </div>
+      </div>
+      <div class="scard">
+        <h4>클린 케어</h4>
+        <div class="q">"기획 요소는 있어서 수정/리뉴얼만 필요해요"</div>
+        <div class="body">제품 사진이나 기획이 명확하게 준비되어 있어<br>판매율을 높이는 구조적 텍스트 및 디자인 정돈 집중 작업</div>
+        <div class="foot">
+          <div class="now"><span class="price">15만원</span><span class="origin">정가 20만원</span></div>
+          <span class="off">-25%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RISK FREE -->
+  <section class="sec risk riskhead">
+    <div class="kick">RISK FREE</div>
+    <h2 class="h2">외주를 맡길 때 두려운 리스크,<br>AKIT이 정직하게 제거합니다.</h2>
+    <div class="rcards">
+      <div class="rcard">
+        <div class="ic">🔍</div>
+        <h4>와이어프레임 단계<br>고심 및 조율 보증</h4>
+        <p>곧바로 디자인에 착수하지 않습니다.<br>화면 설계안을 먼저 공유하고,<br>대표님의 브랜드 색깔과<br>완벽하게 결합될 때까지<br>누구보다 깊게 고심하고 조율합니다.</p>
+      </div>
+      <div class="rcard">
+        <div class="ic">📁</div>
+        <h4>수정이 필요할 땐<br>Figma 원본 옵션 선택</h4>
+        <p>닫힌 이미지(JPG)만 가져가서<br>답답해하지 마세요.<br>향후 정보 수정이나 변동이 필요할 시, 언제든 합리적인 추가금액으로<br>원본을 소장하실 수 있습니다.</p>
+      </div>
+      <div class="rcard">
+        <div class="ic">📷</div>
+        <h4>스냅 작가의 피사체 해석<br>거품 없는 연출 기술</h4>
+        <p>제품 고유의 디테일과 감도는<br>웨딩스냅 작가의 눈으로 정교하게<br>담아내고, 배경만을 생성형 AI로<br>디자인하여 값비싼 스튜디오<br>대관료 거품을 과감히 뺐습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK FLOW + MAKER -->
+  <section class="sec flow flowhead">
+    <div class="kick">WORK FLOW</div>
+    <h2 class="h2">체계적이고 투명한<br>7-10일의 올인원 프로세스.</h2>
+    <div class="steps">
+      <div class="wstep"><div class="wn">01</div><div class="wh"><span class="t">사전 폼 &amp; 미팅</span><span class="d">(1일)</span></div><p>사전 폼 작성 후 1:1 심층 미팅으로<br>셀링 포인트를 도출합니다.</p></div>
+      <div class="wstep"><div class="wn">02</div><div class="wh"><span class="t">무료 픽업</span><span class="d">(1~2일)</span></div><p>왕복 택배비 지원. 제품만 상자에 넣어주시면<br>수거부터 반송까지 처리합니다.</p></div>
+      <div class="wstep"><div class="wn">03</div><div class="wh"><span class="t">설계 &amp; 실촬영</span><span class="d">(2~3일)</span></div><p>구조안(와이어프레임) 피드백 반영<br>및 고해상도 누끼 감도 촬영을 진행합니다.</p></div>
+      <div class="wstep"><div class="wn">04</div><div class="wh"><span class="t">AI 연출 &amp; 디자인</span><span class="d">(2~3일)</span></div><p>기획안 위로 피그마 디자인 및<br>생성형 AI 배경 연출을 입힙니다.</p></div>
+      <div class="wstep"><div class="wn">05</div><div class="wh"><span class="t">피드백 &amp; 납품</span><span class="d">(1~2일)</span></div><p>총 2회의 수정 작업 후 최종 이미지와<br>웹 업로드용 코드를 전달드립니다.</p></div>
+    </div>
+    <div class="maker">
+      <div class="makercircle"><span>AKIT<br>STUDIO</span></div>
+      <div class="makerinfo">
+        <h4>프러덕트 디자이너이자, 직접 판매해본 셀러</h4>
+        <ul>
+          <li>오프라인 소싱 매장 'nouvoa' 운영 · 셀러의 소비자 관점</li>
+          <li>앱·웹 서비스 기획·디자인 · 스크롤 이탈을 막는 UI/UX 구조 설계력</li>
+          <li>현역 웨딩스냅 작가 · 피사체의 본질을 담는 제품 촬영 감각</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="sec faq faqhead">
+    <div class="kick">FAQ</div>
+    <h2 class="h2">외주 의뢰 전,<br>자주 묻는 질문들.</h2>
+    <div class="faqbox">
+      <div class="qa">
+        <div class="qm">Q</div>
+        <div class="qc">
+          <div class="qq">일반 디자인 외주나 템플릿 제작과는 무엇이 다른가요?</div>
+          <div class="qa-a">단순 디자인이나 정형화된 템플릿은 제품의 세일즈 포인트를 담지 못합니다. AKIT은 다릅니다.<br>오프라인 매장에서 손님의 발길을 잡고 결제까지 이끌어낸 '진짜 세일즈 경험'을 바탕으로 만듭니다.<br>상세페이지는 온라인에 지은 매장과 같습니다.<br>유저가 스크롤을 내리며 자연스럽게 설득되도록, 탄탄한 UI/UX 구매 구조를 먼저 설계합니다.<br>그 위에 정교한 카피와 비주얼을 채우기에 실제 매출 전환율에서 차이가 납니다.</div>
+        </div>
+      </div>
+      <div class="qa">
+        <div class="qm">Q</div>
+        <div class="qc">
+          <div class="qq">촬영은 어떤 방식으로 진행되나요? 모델 촬영이나 연출 컷도 가능한가요?</div>
+          <div class="qa-blocks">
+            <div class="qa-a"><span class="qlabel">기본 제공</span><br>제품을 보내주시면 상세페이지에 꼭 필요한 선명한 제품 누끼 실촬영을 현역 스냅 작가의 감도로 직접 진행합니다.<br>얼굴이 노출되지 않는 기본 연출·무드 컷이 함께 제공되며,<br>배경·공간 연출은 불필요한 스튜디오 대관 비용을 줄이기 위해 정교한 AI 그래픽으로 왜곡 없이 구현합니다.<br>원하시는 사진 구도나 컨셉이 있다면, 작업 의뢰 전에 미리 알려주시면 기획에 반영해 드립니다.</div>
+            <div class="qa-a"><span class="qlabel">추가 디테일 작업</span><br>얼굴이 노출되는 모델 컷, 모델 선정, 특정 포즈 연출 등 세부 작업은 별도 비용으로 진행됩니다.<br>기본 제공 컷 외의 추가 변형이나 요소가 필요한 경우에도 추가금이 발생합니다.</div>
+            <div class="qa-a"><span class="qlabel">스튜디오 대관 또는 야외 촬영</span><br>출장 촬영, 스튜디오 촬영, 제품·모델 실촬영 모두 가능합니다.<br>필요 시, 협의 후 별도 견적으로 안내해 드립니다.</div>
+          </div>
+        </div>
+      </div>
+      <div class="qa">
+        <div class="qm">Q</div>
+        <div class="qc">
+          <div class="qq">스마트스토어 외에 쿠팡이나 자사몰에도 바로 쓸 수 있나요?</div>
+          <div class="qa-a">네, 최적화된 규격의 고화질 이미지 파일과 함께, 상세페이지 영역에 바로 붙여넣어 로딩 속도를 높일 수 있는<br>복사용 HTML 코드를 함께 챙겨드립니다. 쿠팡, 스마트스토어, 카페24 자사몰 어디든 즉시 업로드 가능합니다.</div>
+        </div>
+      </div>
+      <div class="qa">
+        <div class="qm">Q</div>
+        <div class="qc">
+          <div class="qq">정말 제품만 택배로 보내면 알아서 다 해주시나요?</div>
+          <div class="qa-a">네, 맞습니다. 간단한 사전 질문 폼을 작성해 주시고 미팅을 마치시면, 대표님이 하실 일은 끝납니다.<br>무료 픽업 서비스를 통해 제품을 박스에 담아 보내주시면,<br>[기획 &gt; 핵심 카피라이팅 &gt; 필수 실촬영 &gt; UI/UX 디자인 &gt; 즉시 적용 가능한 HTML 코드 분할]까지 전 과정을 해결해 드립니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- START -->
+  <section class="sec start">
+    <div class="kick">READY TO START</div>
+    <h2>버거운 제작 과정은 맡겨두고<br>대표님은 '비즈니스 성장'에만 몰두하세요.</h2>
+    <div class="sub">사전 질문 폼을 남겨주시면, 브랜드에 맞는 제작 방향을 1:1로 제안해 드립니다.</div>
+    <a class="btn" href="#">사전 질문 폼 작성하기 →</a>
+    <div class="note">김진 대표 수강생 한정 혜택 상시 진행 중</div>
+    <div class="fine">※ 작업물은 포트폴리오로 사용될 수 있으며, 모든 디자인 소스는 100% 상업적 이용이 가능한 라이선스 내에서 안전하게 제작됩니다.</div>
+  </section>
+
+</div>
+<script>
+(function(){
+  // scroll reveal
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:0.12});
+    document.querySelectorAll('.page > section').forEach(function(sec){
+      Array.prototype.slice.call(sec.children).forEach(function(ch,i){
+        ch.classList.add('reveal');
+        ch.style.transitionDelay=(Math.min(i,6)*0.06)+'s';
+        io.observe(ch);
+      });
+    });
+  }
+  // FAQ accordion
+  document.querySelectorAll('.faq .qa').forEach(function(qa,idx){
+    var qc=qa.querySelector('.qc'); if(!qc)return;
+    var qq=qc.querySelector('.qq'); if(!qq)return;
+    var body=document.createElement('div'); body.className='qa-body';
+    var inner=document.createElement('div'); inner.className='qa-inner';
+    while(qq.nextSibling){inner.appendChild(qq.nextSibling);}
+    body.appendChild(inner); qc.appendChild(body);
+    qa.classList.add('acc');
+    if(idx===0) qa.classList.add('open');
+    qq.addEventListener('click',function(){qa.classList.toggle('open');});
+  });
+  // sticky shadow + back-to-top
+  var tb=document.querySelector('.topbar');
+  var bt=document.createElement('button'); bt.id='toTop'; bt.setAttribute('aria-label','맨 위로'); bt.innerHTML='&uarr;';
+  document.body.appendChild(bt);
+  bt.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+  function onScroll(){
+    var y=window.scrollY||window.pageYOffset||0;
+    if(tb){tb.classList.toggle('scrolled',y>10);}
+    bt.classList.toggle('show',y>500);
+  }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>
